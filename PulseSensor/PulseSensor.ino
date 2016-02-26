@@ -20,6 +20,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ
 
 int pulsePin = 0;
 int heartPin = 13;    //pin to blink LED at each beat for testing
+int switchPin = 2;
+int switchState = 0;
 
 volatile int BPM;
 volatile int Signal;
@@ -30,6 +32,10 @@ volatile boolean QS = false;    //becomes true when arduino finds a beat
 int BAM = ((BPM / 60));
 
 void setup() {
+  
+  pinMode(switchPin, INPUT);
+  pinMode(heartPin, OUTPUT);
+  
   strip.begin();
   strip.show();
   strip.setBrightness(80);
@@ -38,46 +44,65 @@ void setup() {
 
   currentPalette = RainbowColors_p;
   currentBlending = LINEARBLEND;
-
-  pinMode(heartPin, OUTPUT);
+  
   interruptSetup();
 }
 
 void loop() {
-
+  /*
   if (QS == true) {
-    red();
-    strip.setBrightness(0);
-    strip.show();
-    delay(IBI);
-    strip.setBrightness(80);
-    strip.show();
 
     QS = false;
 
-  } else {
+  } 
+  */
+  
+  switchState = digitalRead(switchPin);
+  
+  switch(switchState){
+    case HIGH :
+        //digitalWrite(heartPin, HIGH);
+        red();
+        delay(100);
+        strip.setBrightness(10);
+        strip.show();
+        delay(IBI);
+        strip.setBrightness(90);
+        strip.show();
+    break;
+     
+    case LOW :
+      //Call the LED Modes here
+      //digitalWrite(heartPin, LOW);
+      ChangePalettePeriodically();
 
-    //Call the LED Modes here
-    rainbow(0);
-    colorWipe(strip.Color(255, 0, 0), 50); // Red
-    colorWipe(strip.Color(0, 255, 0), 50); // Green
-    colorWipe(strip.Color(0, 0, 255), 50); // Blue
-    // Send a theater pixel chase in...
-    theaterChase(strip.Color(127, 127, 127), 50); // White
-    theaterChase(strip.Color(127, 0, 0), 50); // Red
-    theaterChase(strip.Color(0, 0, 127), 50); // Blue
+      static uint8_t startIndex = 0;
+      startIndex = startIndex + 1; // motion speed
 
-    ChangePalettePeriodically();
+      FillLEDsFromPaletteColors( startIndex);
 
-    static uint8_t startIndex = 0;
-    startIndex = startIndex + 1; /* motion speed */
-
-    FillLEDsFromPaletteColors( startIndex);
-
-    FastLED.show();
-    FastLED.delay(1000 / UPDATES_PER_SECOND);
+      FastLED.show();
+      FastLED.delay(1000 / UPDATES_PER_SECOND);
+    
+      break;
+      
+      rainbow(0);
+      colorWipe(strip.Color(255, 0, 0), 50); // Red
+      colorWipe(strip.Color(0, 255, 0), 50); // Green
+      colorWipe(strip.Color(0, 0, 255), 50); // Blue
+      // Send a theater pixel chase in...
+      theaterChase(strip.Color(127, 127, 127), 50); // White
+      theaterChase(strip.Color(127, 0, 0), 50); // Red
+      theaterChase(strip.Color(0, 0, 127), 50); // Blue
+    break;
   }
+  
 }
+
+
+
+
+//-------------------------------------------------------------------------------------->
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
@@ -287,3 +312,5 @@ uint32_t Wheel(byte WheelPos) {
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 */
+
+//Timer
