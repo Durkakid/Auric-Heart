@@ -79,7 +79,7 @@ void loop() {
       static uint8_t startIndex = 0;
       startIndex = startIndex + 1; // motion speed
 
-      FillLEDsFromPaletteColors( startIndex);
+      FillLEDsFromPaletteColors(startIndex);
 
       FastLED.show();
       FastLED.delay(1000 / UPDATES_PER_SECOND);
@@ -298,7 +298,7 @@ const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM =
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
-/*
+
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
   if (WheelPos < 85) {
@@ -311,6 +311,3 @@ uint32_t Wheel(byte WheelPos) {
   WheelPos -= 170;
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
-*/
-
-//Timer
